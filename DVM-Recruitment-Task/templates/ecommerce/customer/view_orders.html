@@ -1,0 +1,137 @@
+{% extends 'ecommerce/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <!-- Navigation-->
+    <title>Customer Dashboard</title>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">Ecommerce Site</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page"
+                                            href="{% url 'ecommerce:customer_dashboard' %}">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Profile</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'ecommerce:customer_add_money' %}">Add Money</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'ecommerce:customer_view_prev_orders' %}">View
+                                Previous Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'ecommerce:customer_shipping_address' %}">Addresses</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'ecommerce:customer_dashboard' %}">All
+                                Products</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            {% for vendor in vendors %}
+                                <li><a class="dropdown-item"
+                                       href="{% url 'ecommerce:customer_vendor_items' vendor %}">{{ vendor }}'s
+                                    products</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="{% url 'ecommerce:customer_add_money' %}">
+                        <button class="btn btn-outline-dark">
+                            Balance
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">${{ balance }}</span>
+                        </button>
+                    </a>
+                    &nbsp;&nbsp;
+                    <a href="{% url 'ecommerce:customer_wishlist' %}">
+                        <button class="btn btn-danger">
+                            <i class="bi bi-heart"></i>
+                            Wishlist
+                        </button>
+                    </a>
+                    &nbsp;&nbsp;
+                    {% if customer.cart_set.all %}
+                        <a href="{% url 'ecommerce:customer_cart' %}">
+                            <button class="btn btn-outline-dark">
+                                <i class="bi-cart-fill me-1"></i>
+                                Cart
+                                <span class="badge bg-dark text-white ms-1 rounded-pill">{{ customer.cart_set.all|length }}</span>
+                            </button>
+                        </a>
+                    {% else %}
+                        <button value="disabled" class="btn btn-outline-dark">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </button>
+                    {% endif %}
+                    &nbsp;&nbsp;
+                    <a href="{% url 'logout' %}">
+                        <button class="btn btn-danger">
+                            Logout
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Header-->
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Previous Orders</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Items you've ordered previously</p>
+            </div>
+        </div>
+    </header>
+    <br>
+
+
+    {% for order in orders %}
+        <section>
+            <div class="card text-center text-black">
+                <b>Order No.</b>{{ order.id }}
+                <div class="container px-4 px-lg-5 mt-5">
+                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                        {% for item in order.ordereditems_set.all %}
+                            <div class="col mb-5">
+                                <div class="card h-100">
+                                    <!-- Product image-->
+                                    <img class="card-img-top" src="{{ item.item_image.url }}" alt="..."/>
+                                    <!-- Product details-->
+                                    <div class="card-body p-4">
+                                        <div class="text-center">
+                                            <!-- Product name-->
+                                            <h5 class="fw-bolder">{{ item.item_name }}</h5>
+                                            <!-- Product price-->
+                                            <b>Quantity : </b>{{ item.quantity }}<br>
+                                            <b>Total Cost : </b>${{ item.total_cost }}<br>
+                                            <b>Vendor : </b>{{ item.vendor }}
+                                        </div>
+                                    </div>
+                                    <!-- Product actions-->
+                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endfor %}
+
+
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+    </footer>
+{% endblock content %}

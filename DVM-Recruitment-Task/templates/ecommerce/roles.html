@@ -1,0 +1,62 @@
+{% extends 'ecommerce/base.html' %}
+{% load static %}
+
+{% block content %}
+    <title>Index</title>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">
+                <div>Ecommerce Site</div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Ecommerce</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Welcome to Ecommerce Site</p>
+            </div>
+        </div>
+    </header>
+    <br>
+    {% if user.is_customer %}
+        <div align="center">
+            <p class="text-black">Click here to get redirected to</p>
+            <a href="{% url 'ecommerce:customer_dashboard' %}">
+                <button class="btn btn-outline-dark">
+                    Customer Dashboard
+                </button>
+            </a>
+        </div>
+    {% elif user.is_vendor %}
+        <div align="center">
+            <p class="text-black">Click here to get redirected to</p>
+            <a href="{% url 'ecommerce:vendor_dashboard' %}">
+                <button class="btn btn-outline-dark">
+                    Vendor Dashboard
+                </button>
+            </a>
+        </div>
+    {% else %}
+        <div align="center">
+            <p class="text-black">Please Select your role
+            <div class="text-danger">(You won't be allowed to change it later)</div>
+            </p>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <button name="vendor" class="btn btn-outline-dark" type="submit">Vendor</button>
+                <button name="customer" class="btn btn-outline-dark" type="submit">Customer</button>
+            </form>
+        </div>
+    {% endif %}
+    <br>
+    <br>
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+    </footer>
+{% endblock content %}

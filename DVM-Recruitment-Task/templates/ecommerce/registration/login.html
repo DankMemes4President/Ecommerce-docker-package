@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Login</title>
+</head>
+<body>
+<h2>Vendor Login</h2>
+<br>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="login">
+</form>
+<br>
+<a href="{% url 'index' %}">Back to index</a>
+</body>
+</html>

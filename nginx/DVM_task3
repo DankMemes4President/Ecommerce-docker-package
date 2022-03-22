@@ -1,0 +1,81 @@
+upstream DVM_task3_app_server {
+    server web:8000;
+}
+
+server {
+    server_name ecommercesiteproject.tk
+    listen 443;
+    client_max_body_size 4G;
+
+    access_log /home/azureuser/ecommerce3/logs/nginx-access.log;
+    error_log /home/azureuser/ecommerce3/logs/nginx-error.log;
+
+    location = /favicon.ico { access_log off; log_not_found off; } 
+
+    location /static/ {
+        autoindex on;
+        alias /home/azureuser/ecommerce3/staticfiles/;
+    }
+
+    location /media/ {
+        autoindex on;
+        alias /home/azureuser/ecommerce3/mediafiles/;
+    }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+	proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://DVM_task3_app_server;
+            break;
+        }
+    }
+
+	location /nginx_status {
+        	stub_status on;
+        	allow 127.0.0.1;
+        	deny all;
+	}
+
+    # For favicon
+    location  /favicon.ico {
+        alias /home/azureuser/ecommerce3/static/assests/pngfind.com-ecommerce-png-290389.png;
+    }
+    # For robots.txt
+    location  /robots.txt {
+        alias /home/azureuser/ecommerce3/static/robots.txt ;
+    }
+    # Error pages
+    error_page 500 502 503 504 /500.html;
+    location = /500.html {
+        root /home/azureuser/ecommerce3/static/;
+    }
+
+     location ~ /.well-known/acme-challenge/ {
+            root /home/azureuser/ecommerce3/;
+	}    
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/ecommercesiteproject.tk/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/ecommercesiteproject.tk/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+
+ server {
+    if ($host = ecommercesiteproject.tk) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name ecommercesiteproject.tk
+    client_max_body_size 4G;
+    return 404; # managed by Certbot
+
+
+}

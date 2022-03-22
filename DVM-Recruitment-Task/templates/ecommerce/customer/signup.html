@@ -1,0 +1,39 @@
+{% extends 'ecommerce/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">
+                <div>Ecommerce Site</div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Customer</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Signup to register your account</p>
+            </div>
+        </div>
+    </header>
+    <title>Customer Signup</title>
+    <br>
+    <div class="col-md-4 offset-md-4">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-success">Signup</button>
+        </form>
+        <br>
+        <br>
+    </div>
+
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+    </footer>
+{% endblock content %}
